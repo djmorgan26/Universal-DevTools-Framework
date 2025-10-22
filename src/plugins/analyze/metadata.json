@@ -1,0 +1,29 @@
+{
+  "name": "analyze",
+  "version": "1.0.0",
+  "description": "Intelligent project analysis using MCP and multi-agent orchestration",
+  "author": "Universal DevTools Framework",
+  "commands": {
+    "analyze": {
+      "description": "Analyze project structure and code quality",
+      "usage": "devtools analyze [options]",
+      "options": {
+        "--path": "Project path to analyze (default: current directory)",
+        "--deep": "Run deep analysis with parallel execution",
+        "--format": "Output format: pretty (default) or json"
+      }
+    }
+  },
+  "dependencies": {
+    "mcp": true,
+    "agents": ["discovery", "code-analyzer"]
+  },
+  "features": [
+    "Project type detection",
+    "Framework identification",
+    "Code metrics analysis",
+    "Quality score calculation",
+    "Issue identification",
+    "Beautiful formatted reports"
+  ]
+}

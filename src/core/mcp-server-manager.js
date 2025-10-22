@@ -35,6 +35,7 @@ class MCPServerManager {
 
     // Get server configuration
     const serverConfig = this.config.get(`mcp.servers.${mcpName}`);
+
     if (!serverConfig) {
       throw new Error(`MCP server '${mcpName}' not configured`);
     }
@@ -252,10 +253,10 @@ class MCPServerManager {
    * @private
    */
   async spawnServer(serverPath, args = []) {
-    const { execa } = await import('execa');
+    const { spawn } = require('child_process');
 
     // Spawn as Node.js process
-    const serverProcess = execa('node', [serverPath, ...args], {
+    const serverProcess = spawn('node', [serverPath, ...args], {
       stdio: ['pipe', 'pipe', 'pipe'],
       env: {
         ...process.env,

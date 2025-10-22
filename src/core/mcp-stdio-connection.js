@@ -67,12 +67,12 @@ class StdioConnection extends EventEmitter {
             version: '1.0.0'
           }
         }
-      });
+      }, 5000); // 5 second timeout for initialize
 
       this.logger?.debug('MCP server initialized', response);
     } catch (error) {
       // Initialize might not be required for all servers
-      this.logger?.debug('Initialize request not supported, continuing anyway');
+      this.logger?.warn(`Initialize request failed: ${error.message}, continuing anyway`);
     }
   }
 

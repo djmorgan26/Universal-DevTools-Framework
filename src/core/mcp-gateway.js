@@ -32,6 +32,7 @@ class MCPGateway {
 
     // Check if MCP is enabled in config
     const mcpEnabled = this.config.get('mcp.enabled');
+
     if (!mcpEnabled) {
       this.logger.debug('MCP disabled in configuration');
       return;
@@ -50,6 +51,7 @@ class MCPGateway {
 
       // Start servers in parallel for better performance
       const autoStart = this.config.get('mcp.autoStart');
+
       if (autoStart && serversToStart.length > 0) {
         this.logger.verbose(`Starting ${serversToStart.length} MCP server(s)...`);
 
