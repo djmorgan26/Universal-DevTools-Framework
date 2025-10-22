@@ -68,7 +68,12 @@ class CLI {
 
       // Register plugin's commands
       for (const [cmdName, cmdHandler] of Object.entries(plugin.commands)) {
-        const subCmd = pluginCmd.command(cmdName);
+        // Build command with arguments if specified
+        const cmdSignature = cmdHandler.arguments
+          ? `${cmdName} ${cmdHandler.arguments}`
+          : cmdName;
+
+        const subCmd = pluginCmd.command(cmdSignature);
 
         // Add command-specific options if provided
         if (cmdHandler.options) {

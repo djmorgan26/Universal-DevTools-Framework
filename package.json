@@ -52,6 +52,10 @@
     "collectCoverageFrom": [
       "src/**/*.js",
       "!src/**/*.test.js"
+    ],
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "testMatch": [
+      "**/tests/**/*.test.js"
     ]
   }
 }

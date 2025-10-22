@@ -8,20 +8,20 @@ const { RegistryManager } = require('../../../core/registry-manager');
 
 class InitCommand {
   constructor() {
-    this.description = 'Initialize new Python project';
+    this.description = 'Initialize new Python project with virtual environment';
     this.options = [
       {
         flags: '-t, --template <type>',
-        description: 'Project template (basic, fastapi)',
+        description: 'Project template: basic (simple script) or fastapi (API)',
         defaultValue: 'basic'
       },
       {
         flags: '--skip-install',
-        description: 'Skip installing dependencies'
+        description: 'Skip installing dependencies from requirements.txt'
       },
       {
         flags: '--python <path>',
-        description: 'Path to Python executable',
+        description: 'Python executable (python3, python3.11, etc.)',
         defaultValue: 'python3'
       }
     ];

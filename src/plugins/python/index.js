@@ -6,10 +6,12 @@
  * - add: Add package to requirements
  * - remove: Remove package
  * - check: Verify environment setup
- * - config: Configure registry settings
  */
 
 const { InitCommand } = require('./commands/init');
+const { AddCommand } = require('./commands/add');
+const { RemoveCommand } = require('./commands/remove');
+const { CheckCommand } = require('./commands/check');
 
 module.exports = {
   name: 'python',
@@ -20,22 +22,23 @@ module.exports = {
   // Available commands
   commands: {
     init: new InitCommand(),
+    add: new AddCommand(),
+    remove: new RemoveCommand(),
+    check: new CheckCommand()
+  },
 
-    add: {
-      description: 'Add package to project',
-      async execute(context, packageName, options) {
-        const { logger } = context;
-        logger.info('Python add command - coming soon!');
-        logger.info(`Package: ${packageName}`);
-      }
-    },
+  // Plugin metadata
+  metadata: {
+    // MCP servers this plugin uses
+    requiredMCPs: ['filesystem', 'git'],
 
-    check: {
-      description: 'Verify Python environment setup',
-      async execute(context) {
-        const { logger } = context;
-        logger.info('Python check command - coming soon!');
-      }
-    }
+    // Supported Python versions
+    pythonVersions: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13'],
+
+    // Available templates
+    templates: ['basic', 'fastapi'],
+
+    // Supported registries
+    registries: ['pypi', 'artifactory', 'custom']
   }
 };
