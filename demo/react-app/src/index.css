@@ -1,0 +1,17 @@
+/**
+ * Global Styles Entry Point
+ *
+ * This file imports the global stylesheet that contains:
+ * - CSS variables for theming
+ * - Base styles and resets
+ * - Utility classes
+ * - Component styles
+ *
+ * The global-styles.css file is managed by DevTools Framework
+ * and can be customized per company/profile.
+ */
+
+/* Import company/profile global styles */
+@import './global-styles.css';
+
+/* Additional application-specific overrides can go here */
