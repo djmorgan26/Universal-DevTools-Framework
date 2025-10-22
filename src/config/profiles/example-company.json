@@ -1,0 +1,39 @@
+{
+  "profile": "example-company",
+  "version": "1.0.0",
+  "description": "Example Company profile with custom branding and Artifactory registries",
+
+  "python": {
+    "registryType": "artifactory",
+    "indexUrl": "${ARTIFACTORY_URL}/artifactory/api/pypi/pypi-virtual/simple",
+    "trustedHost": "${ARTIFACTORY_HOST}",
+    "extraIndexUrl": null,
+    "requiresAuth": true,
+    "authType": "basic"
+  },
+
+  "node": {
+    "registryType": "artifactory",
+    "registry": "${ARTIFACTORY_URL}/artifactory/api/npm/npm-virtual",
+    "requiresAuth": true
+  },
+
+  "docker": {
+    "registryType": "artifactory",
+    "registry": "${ARTIFACTORY_HOST}/docker-virtual"
+  },
+
+  "mcp": {
+    "enabled": true,
+    "autoStart": true,
+    "idleTimeout": 900000
+  },
+
+  "branding": {
+    "theme": "example-company",
+    "customStylesPath": null,
+    "companyName": "Example Company",
+    "logoPath": null,
+    "faviconPath": null
+  }
+}

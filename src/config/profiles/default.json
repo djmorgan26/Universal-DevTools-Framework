@@ -26,5 +26,13 @@
     "enabled": true,
     "autoStart": true,
     "idleTimeout": 900000
+  },
+
+  "branding": {
+    "theme": "default",
+    "customStylesPath": null,
+    "companyName": null,
+    "logoPath": null,
+    "faviconPath": null
   }
 }

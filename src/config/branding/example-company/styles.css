@@ -1,0 +1,394 @@
+/**
+ * Example Company Branding Stylesheet
+ *
+ * This is an example of a custom company branding stylesheet.
+ * Copy this file and customize it for your organization's brand.
+ */
+
+/* Company Brand Colors */
+:root {
+  /* Primary Brand Colors - Replace with your company colors */
+  --primary-color: #0066cc;          /* Company Blue */
+  --primary-hover: #0052a3;
+  --primary-light: #3385d6;
+  --primary-dark: #004080;
+
+  /* Secondary Brand Colors */
+  --secondary-color: #6c757d;        /* Company Gray */
+  --secondary-hover: #5a6268;
+  --secondary-light: #868e96;
+
+  /* Accent Colors */
+  --accent-color: #ff6b35;           /* Company Orange */
+  --accent-hover: #ff5722;
+
+  /* Semantic Colors */
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --error-color: #dc3545;
+  --info-color: #17a2b8;
+
+  /* Neutral Colors */
+  --white: #ffffff;
+  --black: #000000;
+  --gray-50: #f8f9fa;
+  --gray-100: #e9ecef;
+  --gray-200: #dee2e6;
+  --gray-300: #ced4da;
+  --gray-400: #adb5bd;
+  --gray-500: #6c757d;
+  --gray-600: #495057;
+  --gray-700: #343a40;
+  --gray-800: #212529;
+  --gray-900: #0a0c0d;
+
+  /* Background Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-brand: #0066cc;               /* Brand background */
+
+  /* Text Colors */
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-tertiary: #6c757d;
+  --text-inverse: #ffffff;
+  --text-brand: #0066cc;
+
+  /* Border Colors */
+  --border-color: #dee2e6;
+  --border-hover: #adb5bd;
+
+  /* Company-specific Typography */
+  --font-family-sans: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  --font-family-heading: 'Inter', 'Segoe UI', sans-serif;
+  --font-family-mono: 'Fira Code', 'Consolas', 'Monaco', monospace;
+
+  /* Company Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 102, 204, 0.08);
+  --shadow-md: 0 4px 8px rgba(0, 102, 204, 0.12);
+  --shadow-lg: 0 8px 16px rgba(0, 102, 204, 0.16);
+  --shadow-brand: 0 4px 12px rgba(0, 102, 204, 0.2);
+
+  /* Border Radius - Company prefers more rounded */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Company Dark Mode Theme */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0a0c0d;
+    --bg-secondary: #212529;
+    --bg-tertiary: #343a40;
+    --bg-brand: #0052a3;
+    --text-primary: #f8f9fa;
+    --text-secondary: #dee2e6;
+    --text-tertiary: #adb5bd;
+    --border-color: #343a40;
+    --border-hover: #495057;
+  }
+}
+
+/* Company-specific Base Styles */
+body {
+  font-family: var(--font-family-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+}
+
+/* Company Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-heading);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+}
+
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+/* Company Links */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  font-weight: 500;
+}
+
+a:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}
+
+/* Company Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-family-sans);
+  line-height: 1.5;
+  border-radius: var(--radius-lg);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: var(--shadow-brand);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: var(--text-inverse);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+  text-decoration: none;
+}
+
+.btn-accent {
+  background-color: var(--accent-color);
+  color: var(--text-inverse);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+
+/* Company Cards */
+.card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.card-branded {
+  border-top: 4px solid var(--primary-color);
+}
+
+.card-header {
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--border-color);
+}
+
+/* Company Navigation */
+.navbar {
+  background-color: var(--bg-brand);
+  color: var(--text-inverse);
+  padding: var(--spacing-md) var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-inverse);
+  text-decoration: none;
+}
+
+.navbar-brand:hover {
+  color: var(--text-inverse);
+  text-decoration: none;
+}
+
+/* Company Forms */
+input, textarea, select {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: 1rem;
+  font-family: var(--font-family-sans);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Company Alerts */
+.alert {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+  border-left: 4px solid;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border-left-color: var(--success-color);
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border-left-color: var(--warning-color);
+}
+
+.alert-error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left-color: var(--error-color);
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border-left-color: var(--info-color);
+}
+
+/* Company-specific Components */
+.hero {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  color: var(--text-inverse);
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+
+.hero h1 {
+  color: var(--text-inverse);
+  margin-bottom: var(--spacing-lg);
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-color);
+  color: var(--text-inverse);
+}
+
+.badge-accent {
+  background-color: var(--accent-color);
+}
+
+/* Company Footer */
+.footer {
+  background-color: var(--bg-secondary);
+  border-top: 2px solid var(--border-color);
+  padding: var(--spacing-xl);
+  margin-top: var(--spacing-3xl);
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Utility Classes */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.text-brand {
+  color: var(--text-brand);
+}
+
+.bg-brand {
+  background-color: var(--bg-brand);
+  color: var(--text-inverse);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

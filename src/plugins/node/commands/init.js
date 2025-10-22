@@ -3,6 +3,7 @@ const path = require('path');
 const ora = require('ora');
 const { NpmManager } = require('../utils/npm-manager');
 const { RegistryManager } = require('../../../core/registry-manager');
+const { BrandingManager } = require('../../../core/branding-manager');
 
 /**
  * Node.js Project Initialization Command
@@ -60,11 +61,15 @@ class InitCommand {
       // 4. Copy template files
       await this.copyTemplate(template, logger);
 
-      // 5. Copy AI skills
+      // 5. Apply branding (global styles, logo, etc.)
+      const brandingManager = new BrandingManager(config);
+      await this.applyBranding(brandingManager, template, logger);
+
+      // 6. Copy AI skills
       await this.copySkills(logger);
 
-      // 6. Create standard files
-      await this.createStandardFiles(logger);
+      // 7. Create standard files
+      await this.createStandardFiles(brandingManager, template, logger);
 
       // 7. Install dependencies
       if (!skipInstall) {
@@ -248,6 +253,72 @@ class InitCommand {
   }
 
   /**
+   * Apply company branding (styles, logo, favicon)
+   */
+  async applyBranding(brandingManager, template, logger) {
+    const spinner = ora('Applying company branding...').start();
+
+    try {
+      const brandingInfo = brandingManager.getBrandingInfo();
+
+      // For React projects, copy global styles to src/
+      if (template === 'react') {
+        const globalStylesDest = path.join(process.cwd(), 'src', 'global-styles.css');
+        const copied = await brandingManager.copyGlobalStyles(globalStylesDest);
+
+        if (copied) {
+          spinner.text = `Applied ${brandingInfo.theme} theme styles`;
+        }
+
+        // Copy logo to public/ if available
+        if (brandingInfo.hasLogo) {
+          const publicDir = path.join(process.cwd(), 'public');
+          await fs.ensureDir(publicDir);
+          await brandingManager.copyLogo(publicDir);
+        }
+
+        // Copy favicon to public/ if available
+        if (brandingInfo.hasFavicon) {
+          const publicDir = path.join(process.cwd(), 'public');
+          await fs.ensureDir(publicDir);
+          await brandingManager.copyFavicon(publicDir);
+        }
+      }
+
+      // For Express/basic projects, copy to public/ or root
+      else if (template === 'express') {
+        const publicDir = path.join(process.cwd(), 'public');
+        await fs.ensureDir(publicDir);
+
+        const globalStylesDest = path.join(publicDir, 'styles.css');
+        const copied = await brandingManager.copyGlobalStyles(globalStylesDest);
+
+        if (copied) {
+          spinner.text = `Applied ${brandingInfo.theme} theme styles`;
+        }
+
+        if (brandingInfo.hasLogo) {
+          await brandingManager.copyLogo(publicDir);
+        }
+
+        if (brandingInfo.hasFavicon) {
+          await brandingManager.copyFavicon(publicDir);
+        }
+      }
+
+      if (brandingInfo.companyName) {
+        spinner.succeed(`Branding applied (${brandingInfo.companyName} - ${brandingInfo.theme} theme)`);
+      } else {
+        spinner.succeed(`Branding applied (${brandingInfo.theme} theme)`);
+      }
+
+    } catch (error) {
+      spinner.warn('Branding application had warnings (non-critical)');
+      logger.debug(`Branding error: ${error.message}`);
+    }
+  }
+
+  /**
    * Copy AI assistant instructions
    */
   async copySkills(logger) {
@@ -271,7 +342,7 @@ class InitCommand {
   /**
    * Create standard project files
    */
-  async createStandardFiles(logger) {
+  async createStandardFiles(brandingManager, template, logger) {
     const spinner = ora('Creating standard files...').start();
 
     try {
@@ -323,47 +394,18 @@ PORT=3000
         await fs.writeFile(envExamplePath, envContent);
       }
 
-      // README.md (if it doesn't exist)
+      // README.md (if it doesn't exist) - Use branded version
       const readmePath = path.join(process.cwd(), 'README.md');
       if (!await fs.pathExists(readmePath)) {
         const projectName = path.basename(process.cwd());
-        const readmeContent = `# ${projectName}
 
-Node.js project created with DevTools Framework.
+        // Generate branded README using BrandingManager
+        const readmeContent = brandingManager.generateBrandedReadme(projectName, {
+          type: 'node',
+          structure: `- \`src/\` - Application source code\n- \`tests/\` - Test files\n- \`.env.example\` - Environment variable template`,
+          license: 'ISC'
+        });
 
-## Getting Started
-
-\`\`\`bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Run tests
-npm test
-
-# Start production server
-npm start
-\`\`\`
-
-## Project Structure
-
-- \`src/\` - Application source code
-- \`tests/\` - Test files
-- \`.env.example\` - Environment variable template
-
-## Development
-
-This project uses:
-- Node.js for runtime
-- npm for package management
-- Jest for testing
-
-## License
-
-ISC
-`;
         await fs.writeFile(readmePath, readmeContent);
       }
 

@@ -1,13 +1,17 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/**
+ * Global Styles Entry Point
+ *
+ * This file imports the global stylesheet that contains:
+ * - CSS variables for theming
+ * - Base styles and resets
+ * - Utility classes
+ * - Component styles
+ *
+ * The global-styles.css file is managed by DevTools Framework
+ * and can be customized per company/profile.
+ */
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+/* Import company/profile global styles */
+@import './global-styles.css';
+
+/* Additional application-specific overrides can go here */

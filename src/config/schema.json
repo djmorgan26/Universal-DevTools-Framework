@@ -71,6 +71,33 @@
           "minimum": 0
         }
       }
+    },
+    "branding": {
+      "type": "object",
+      "description": "Company branding and theming configuration",
+      "properties": {
+        "theme": {
+          "type": "string",
+          "description": "Theme name (default, example-company, or custom path)",
+          "default": "default"
+        },
+        "customStylesPath": {
+          "type": ["string", "null"],
+          "description": "Path to custom global stylesheet (relative or absolute)"
+        },
+        "companyName": {
+          "type": ["string", "null"],
+          "description": "Company name for branding"
+        },
+        "logoPath": {
+          "type": ["string", "null"],
+          "description": "Path to company logo"
+        },
+        "faviconPath": {
+          "type": ["string", "null"],
+          "description": "Path to favicon"
+        }
+      }
     }
   }
 }

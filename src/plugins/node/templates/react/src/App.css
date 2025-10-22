@@ -1,21 +1,43 @@
+/**
+ * App Component Styles
+ *
+ * Uses CSS variables from global-styles.css for consistency.
+ * All colors, spacing, and typography come from the global theme.
+ */
+
 .App {
   text-align: center;
+  min-height: 100vh;
 }
 
 .App-header {
-  background-color: #282c34;
+  background: linear-gradient(135deg, var(--primary-color, #2563eb) 0%, var(--primary-dark, #1e40af) 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--text-inverse, white);
+  padding: var(--spacing-xl, 2rem);
+}
+
+.App-header h1 {
+  color: var(--text-inverse, white);
+  margin-bottom: var(--spacing-lg, 1.5rem);
+  font-size: var(--font-size-4xl, 2.25rem);
+}
+
+.App-header p {
+  margin-bottom: var(--spacing-md, 1rem);
+  color: var(--text-inverse, white);
+  opacity: 0.9;
 }
 
 .App-header code {
-  background-color: #1e1e1e;
-  padding: 0.2em 0.5em;
-  border-radius: 3px;
-  font-family: 'Courier New', Courier, monospace;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: var(--spacing-xs, 0.25rem) var(--spacing-sm, 0.5rem);
+  border-radius: var(--radius-sm, 0.25rem);
+  font-family: var(--font-family-mono, 'Courier New', Courier, monospace);
+  font-size: var(--font-size-sm, 0.875rem);
 }
