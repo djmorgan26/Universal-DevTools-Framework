@@ -1,0 +1,26 @@
+{
+  "logging": {
+    "level": "info",
+    "enableMetrics": true,
+    "enableFileLogging": false,
+    "structuredLogging": false,
+    "logDir": "./logs"
+  },
+  "monitoring": {
+    "enabled": true,
+    "metricsInterval": 60000,
+    "healthCheckInterval": 30000,
+    "exportMetricsOnShutdown": true
+  },
+  "mcp": {
+    "enabled": true,
+    "autoStart": true,
+    "servers": {
+      "filesystem": {
+        "enabled": true,
+        "path": "built-in",
+        "args": []
+      }
+    }
+  }
+}

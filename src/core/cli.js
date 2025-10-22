@@ -1,19 +1,21 @@
 const { Command } = require('commander');
 const chalk = require('chalk');
-const { Logger } = require('./logger');
+const { initLogger, getLogger } = require('./logger');
 const { ConfigManager } = require('./config-manager');
 const { PluginLoader } = require('./plugin-loader');
 const { MCPGateway } = require('./mcp-gateway');
+const { MonitoringManager } = require('./monitoring-manager');
 const path = require('path');
 const fs = require('fs-extra');
 
 class CLI {
   constructor() {
     this.program = new Command();
-    this.logger = new Logger();
     this.config = new ConfigManager();
     this.pluginLoader = new PluginLoader();
+    this.logger = null;
     this.mcpGateway = null;
+    this.monitoring = null;
   }
 
   async run(argv) {
@@ -39,16 +41,30 @@ class CLI {
       await this.config.useProfile(options.profile);
     }
 
-    // Set logger level
-    if (options.debug) {
-      this.logger.setLevel('debug');
-    } else if (options.verbose) {
-      this.logger.setLevel('verbose');
-    }
+    // Initialize unified logger with config
+    const loggerConfig = this.config.get('logging') || {};
+    this.logger = initLogger({
+      level: options.debug ? 'debug' : (options.verbose ? 'verbose' : loggerConfig.level),
+      enableMetrics: loggerConfig.enableMetrics !== false,
+      enableFileLogging: loggerConfig.enableFileLogging || false,
+      structuredLogging: loggerConfig.structuredLogging || false,
+      logDir: loggerConfig.logDir || './logs'
+    });
+
+    this.logger.info('Universal DevTools Framework starting...', {
+      version: packageJson.version,
+      nodeVersion: process.version,
+      platform: process.platform
+    });
+
+    // Initialize Monitoring Manager
+    this.monitoring = new MonitoringManager(this.logger, this.config);
+    this.monitoring.start();
 
     // Initialize MCP Gateway
     try {
       this.mcpGateway = new MCPGateway(this.config, this.logger);
+      this.monitoring.registerComponent('mcpGateway', this.mcpGateway);
       // Gateway will be initialized with required MCPs when plugins load
     } catch (error) {
       this.logger.warn(`Failed to create MCP Gateway: ${error.message}`);
@@ -190,6 +206,172 @@ class CLI {
           }
         });
       });
+
+    // Monitoring commands
+    const monitorCmd = this.program
+      .command('monitor')
+      .description('View monitoring and metrics');
+
+    monitorCmd
+      .command('status')
+      .description('Show monitoring status')
+      .action(async () => {
+        if (!this.monitoring) {
+          console.log(chalk.yellow('Monitoring not enabled'));
+          return;
+        }
+
+        const status = this.monitoring.getStatus();
+        console.log(chalk.cyan('\n📊 Monitoring Status\n'));
+        console.log(chalk.blue('Enabled:'), status.enabled ? chalk.green('Yes') : chalk.red('No'));
+        console.log(chalk.blue('Running:'), status.started ? chalk.green('Yes') : chalk.red('No'));
+        console.log(chalk.blue('Metrics Interval:'), `${status.metricsInterval}ms`);
+        console.log(chalk.blue('Health Check Interval:'), `${status.healthCheckInterval}ms`);
+        console.log(chalk.blue('Components Monitored:'), status.componentsMonitored.join(', ') || 'None');
+      });
+
+    monitorCmd
+      .command('metrics')
+      .description('Show collected metrics')
+      .option('--json', 'Output as JSON')
+      .action(async (options) => {
+        if (!this.monitoring) {
+          console.log(chalk.yellow('Monitoring not enabled'));
+          return;
+        }
+
+        const metrics = this.monitoring.getMetrics();
+
+        if (options.json) {
+          console.log(JSON.stringify(metrics, null, 2));
+          return;
+        }
+
+        console.log(chalk.cyan('\n📈 Metrics\n'));
+        console.log(chalk.blue('Uptime:'), `${(metrics.uptime / 1000).toFixed(2)}s`);
+
+        if (Object.keys(metrics.counters).length > 0) {
+          console.log(chalk.blue('\nCounters:'));
+          for (const [key, value] of Object.entries(metrics.counters)) {
+            console.log(`  ${key}: ${value}`);
+          }
+        }
+
+        if (Object.keys(metrics.gauges).length > 0) {
+          console.log(chalk.blue('\nGauges:'));
+          for (const [key, value] of Object.entries(metrics.gauges)) {
+            const val = typeof value === 'object' ? value.value : value;
+            console.log(`  ${key}: ${val}`);
+          }
+        }
+
+        if (Object.keys(metrics.histograms).length > 0) {
+          console.log(chalk.blue('\nHistograms (Performance):'));
+          for (const [key, stats] of Object.entries(metrics.histograms)) {
+            console.log(`  ${key}:`);
+            console.log(`    Count: ${stats.count}`);
+            console.log(`    Min: ${stats.min}ms`);
+            console.log(`    Max: ${stats.max}ms`);
+            console.log(`    Mean: ${stats.mean.toFixed(2)}ms`);
+            console.log(`    P50: ${stats.p50}ms`);
+            console.log(`    P95: ${stats.p95}ms`);
+            console.log(`    P99: ${stats.p99}ms`);
+          }
+        }
+      });
+
+    monitorCmd
+      .command('health')
+      .description('Run health checks')
+      .option('--json', 'Output as JSON')
+      .action(async (options) => {
+        if (!this.monitoring) {
+          console.log(chalk.yellow('Monitoring not enabled'));
+          return;
+        }
+
+        const health = await this.monitoring.getHealth();
+
+        if (options.json) {
+          console.log(JSON.stringify(health, null, 2));
+          return;
+        }
+
+        console.log(chalk.cyan('\n🏥 Health Status\n'));
+
+        const statusColor = health.status === 'healthy' ? 'green'
+          : health.status === 'degraded' ? 'yellow' : 'red';
+        console.log(chalk.blue('Status:'), chalk[statusColor](health.status.toUpperCase()));
+        console.log(chalk.blue('Uptime:'), `${(health.uptime / 1000).toFixed(2)}s`);
+        console.log(chalk.blue('Timestamp:'), health.timestamp);
+
+        console.log(chalk.blue('\nHealth Checks:'));
+        for (const [name, result] of Object.entries(health.checks)) {
+          const icon = result.status === 'pass' ? chalk.green('✓')
+            : result.status === 'fail' ? chalk.yellow('⚠') : chalk.red('✗');
+          console.log(`  ${icon} ${name}:`, result.status);
+
+          if (result.message) {
+            console.log(`    ${result.message}`);
+          }
+
+          // Show additional details
+          const details = { ...result };
+          delete details.status;
+          delete details.message;
+          if (Object.keys(details).length > 0) {
+            for (const [key, value] of Object.entries(details)) {
+              console.log(`    ${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`);
+            }
+          }
+        }
+      });
+
+    monitorCmd
+      .command('errors')
+      .description('Show error statistics')
+      .action(async () => {
+        if (!this.monitoring) {
+          console.log(chalk.yellow('Monitoring not enabled'));
+          return;
+        }
+
+        const errorStats = this.monitoring.getErrorStats();
+
+        console.log(chalk.cyan('\n⚠️  Error Statistics\n'));
+        console.log(chalk.blue('Total Errors:'), errorStats.total);
+
+        if (errorStats.total > 0) {
+          console.log(chalk.blue('\nRecent Errors:'));
+          errorStats.recent.forEach((err, index) => {
+            console.log(`  ${index + 1}. ${err.message}`);
+            if (err.type) {
+              console.log(`     Type: ${err.type}`);
+            }
+            console.log(`     Time: ${new Date(err.timestamp).toISOString()}`);
+          });
+        }
+
+        if (Object.keys(errorStats.byType).length > 0) {
+          console.log(chalk.blue('\nErrors by Type:'));
+          for (const [type, count] of Object.entries(errorStats.byType)) {
+            console.log(`  ${type}: ${count}`);
+          }
+        }
+      });
+
+    monitorCmd
+      .command('export')
+      .description('Export metrics to file')
+      .action(async () => {
+        if (!this.monitoring) {
+          console.log(chalk.yellow('Monitoring not enabled'));
+          return;
+        }
+
+        this.monitoring.exportMetrics();
+        console.log(chalk.green('✓ Metrics exported'));
+      });
   }
 
   async checkNode() {
@@ -224,6 +406,18 @@ class CLI {
   setupCleanupHandlers() {
     // Cleanup on exit
     const cleanup = async () => {
+      this.logger.info('Shutting down gracefully...');
+
+      // Stop monitoring
+      if (this.monitoring) {
+        try {
+          await this.monitoring.shutdown();
+        } catch (error) {
+          this.logger.debug(`Error during monitoring shutdown: ${error.message}`);
+        }
+      }
+
+      // Shutdown MCP Gateway
       if (this.mcpGateway) {
         try {
           await this.mcpGateway.shutdown();
@@ -231,35 +425,54 @@ class CLI {
           this.logger.debug(`Error during MCP Gateway shutdown: ${error.message}`);
         }
       }
+
+      // Shutdown logger (exports metrics, closes streams)
+      if (this.logger) {
+        try {
+          await this.logger.shutdown();
+        } catch (error) {
+          console.error(`Error during logger shutdown: ${error.message}`);
+        }
+      }
     };
 
     // Handle various exit scenarios
     process.on('exit', () => {
       // Synchronous cleanup only
-      this.logger.debug('Process exiting');
+      console.log('Process exiting');
     });
 
     process.on('SIGINT', async () => {
-      this.logger.debug('Received SIGINT, cleaning up...');
+      console.log('\nReceived SIGINT, cleaning up...');
       await cleanup();
       process.exit(0);
     });
 
     process.on('SIGTERM', async () => {
-      this.logger.debug('Received SIGTERM, cleaning up...');
+      console.log('Received SIGTERM, cleaning up...');
       await cleanup();
       process.exit(0);
     });
 
     // Handle uncaught errors
     process.on('uncaughtException', async (error) => {
-      this.logger.error(`Uncaught exception: ${error.message}`);
+      if (this.logger) {
+        this.logger.error(`Uncaught exception: ${error.message}`, {
+          stack: error.stack
+        });
+      } else {
+        console.error(`Uncaught exception: ${error.message}`);
+      }
       await cleanup();
       process.exit(1);
     });
 
     process.on('unhandledRejection', async (reason) => {
-      this.logger.error(`Unhandled rejection: ${reason}`);
+      if (this.logger) {
+        this.logger.error(`Unhandled rejection: ${reason}`);
+      } else {
+        console.error(`Unhandled rejection: ${reason}`);
+      }
       await cleanup();
       process.exit(1);
     });
