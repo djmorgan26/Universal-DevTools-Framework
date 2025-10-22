@@ -3,13 +3,13 @@
  * Tests MCP + Agent orchestration in isolation
  */
 
-const { Logger } = require('./src/core/logger');
-const { ConfigManager } = require('./src/core/config-manager');
-const { MCPGateway } = require('./src/core/mcp-gateway');
-const { Orchestrator } = require('./src/agents/orchestrator');
-const { ProjectDiscoveryAgent } = require('./src/agents/project-discovery-agent');
-const { CodeAnalyzerAgent } = require('./src/agents/code-analyzer-agent');
-const { analyzeProjectWorkflow } = require('./src/agents/workflows');
+const { Logger } = require('../src/core/logger');
+const { ConfigManager } = require('../src/core/config-manager');
+const { MCPGateway } = require('../src/core/mcp-gateway');
+const { Orchestrator } = require('../src/agents/orchestrator');
+const { ProjectDiscoveryAgent } = require('../src/agents/project-discovery-agent');
+const { CodeAnalyzerAgent } = require('../src/agents/code-analyzer-agent');
+const { analyzeProjectWorkflow } = require('../src/agents/workflows');
 
 async function test() {
   console.log('Starting simple analyze test...\n');
