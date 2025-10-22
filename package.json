@@ -51,7 +51,8 @@
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
       "src/**/*.js",
-      "!src/**/*.test.js"
+      "!src/**/*.test.js",
+      "!src/plugins/**/templates/**"
     ],
     "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
     "testMatch": [

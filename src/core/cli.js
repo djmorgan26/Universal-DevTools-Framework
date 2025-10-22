@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const { Logger } = require('./logger');
 const { ConfigManager } = require('./config-manager');
 const { PluginLoader } = require('./plugin-loader');
+const { MCPGateway } = require('./mcp-gateway');
 const path = require('path');
 const fs = require('fs-extra');
 
@@ -45,11 +46,22 @@ class CLI {
       this.logger.setLevel('verbose');
     }
 
+    // Initialize MCP Gateway
+    try {
+      this.mcpGateway = new MCPGateway(this.config, this.logger);
+      // Gateway will be initialized with required MCPs when plugins load
+    } catch (error) {
+      this.logger.warn(`Failed to create MCP Gateway: ${error.message}`);
+    }
+
     // Register global commands
     this.registerGlobalCommands();
 
     // Load and register plugins
     await this.loadPlugins();
+
+    // Setup cleanup handlers
+    this.setupCleanupHandlers();
 
     // Parse and execute
     await this.program.parseAsync(argv);
@@ -207,6 +219,50 @@ class CLI {
     } catch {
       throw new Error('Git not found');
     }
+  }
+
+  setupCleanupHandlers() {
+    // Cleanup on exit
+    const cleanup = async () => {
+      if (this.mcpGateway) {
+        try {
+          await this.mcpGateway.shutdown();
+        } catch (error) {
+          this.logger.debug(`Error during MCP Gateway shutdown: ${error.message}`);
+        }
+      }
+    };
+
+    // Handle various exit scenarios
+    process.on('exit', () => {
+      // Synchronous cleanup only
+      this.logger.debug('Process exiting');
+    });
+
+    process.on('SIGINT', async () => {
+      this.logger.debug('Received SIGINT, cleaning up...');
+      await cleanup();
+      process.exit(0);
+    });
+
+    process.on('SIGTERM', async () => {
+      this.logger.debug('Received SIGTERM, cleaning up...');
+      await cleanup();
+      process.exit(0);
+    });
+
+    // Handle uncaught errors
+    process.on('uncaughtException', async (error) => {
+      this.logger.error(`Uncaught exception: ${error.message}`);
+      await cleanup();
+      process.exit(1);
+    });
+
+    process.on('unhandledRejection', async (reason) => {
+      this.logger.error(`Unhandled rejection: ${reason}`);
+      await cleanup();
+      process.exit(1);
+    });
   }
 }
 

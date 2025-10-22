@@ -25,7 +25,25 @@
   "mcp": {
     "enabled": true,
     "autoStart": true,
-    "idleTimeout": 900000
+    "idleTimeout": 900000,
+    "servers": {
+      "filesystem": {
+        "enabled": true,
+        "path": "built-in"
+      },
+      "git": {
+        "enabled": false,
+        "path": "built-in"
+      },
+      "grep": {
+        "enabled": false,
+        "path": "built-in"
+      },
+      "bash": {
+        "enabled": false,
+        "path": "built-in"
+      }
+    }
   },
 
   "branding": {
