@@ -1,0 +1,30 @@
+{
+  "profile": "default",
+  "version": "1.0.0",
+  "description": "Default profile using public registries",
+
+  "python": {
+    "registryType": "public",
+    "indexUrl": "https://pypi.org/simple",
+    "trustedHost": null,
+    "extraIndexUrl": null,
+    "requiresAuth": false
+  },
+
+  "node": {
+    "registryType": "public",
+    "registry": "https://registry.npmjs.org",
+    "requiresAuth": false
+  },
+
+  "docker": {
+    "registryType": "public",
+    "registry": "docker.io"
+  },
+
+  "mcp": {
+    "enabled": true,
+    "autoStart": true,
+    "idleTimeout": 900000
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "profile": "artifactory",
+  "version": "1.0.0",
+  "description": "Enterprise Artifactory registry template",
+
+  "python": {
+    "registryType": "artifactory",
+    "indexUrl": "${ARTIFACTORY_URL}/artifactory/api/pypi/pypi-virtual/simple",
+    "trustedHost": "${ARTIFACTORY_HOST}",
+    "extraIndexUrl": "${ARTIFACTORY_URL}/artifactory/api/pypi/python-local/simple",
+    "requiresAuth": true,
+    "authType": "basic"
+  },
+
+  "node": {
+    "registryType": "artifactory",
+    "registry": "${ARTIFACTORY_URL}/artifactory/api/npm/npm-virtual",
+    "requiresAuth": true,
+    "authType": "token"
+  },
+
+  "docker": {
+    "registryType": "artifactory",
+    "registry": "${ARTIFACTORY_HOST}/docker-virtual"
+  },
+
+  "mcp": {
+    "enabled": true,
+    "autoStart": true,
+    "idleTimeout": 900000
+  }
+}

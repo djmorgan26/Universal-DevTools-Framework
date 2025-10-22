@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["profile", "version"],
+  "properties": {
+    "profile": {
+      "type": "string",
+      "description": "Profile name"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Profile version (semver)"
+    },
+    "description": {
+      "type": "string"
+    },
+    "python": {
+      "type": "object",
+      "properties": {
+        "registryType": {
+          "type": "string",
+          "enum": ["public", "artifactory", "custom"]
+        },
+        "indexUrl": {
+          "type": "string"
+        },
+        "trustedHost": {
+          "type": ["string", "null"]
+        },
+        "extraIndexUrl": {
+          "type": ["string", "null"]
+        },
+        "requiresAuth": {
+          "type": "boolean"
+        },
+        "authType": {
+          "type": "string",
+          "enum": ["basic", "token"]
+        }
+      },
+      "required": ["registryType"]
+    },
+    "node": {
+      "type": "object",
+      "properties": {
+        "registryType": {
+          "type": "string",
+          "enum": ["public", "artifactory", "custom"]
+        },
+        "registry": {
+          "type": "string"
+        },
+        "requiresAuth": {
+          "type": "boolean"
+        }
+      },
+      "required": ["registryType"]
+    },
+    "mcp": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "autoStart": {
+          "type": "boolean"
+        },
+        "idleTimeout": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}
