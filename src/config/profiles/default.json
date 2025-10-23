@@ -29,19 +29,47 @@
     "servers": {
       "filesystem": {
         "enabled": true,
+        "type": "built-in",
         "path": "built-in"
       },
       "git": {
-        "enabled": false,
-        "path": "built-in"
+        "enabled": true,
+        "type": "built-in",
+        "path": "built-in",
+        "allowedTools": ["git_status", "git_diff", "git_log", "git_branch", "git_show", "git_blame", "git_remote", "git_config"]
       },
-      "grep": {
+      "github": {
         "enabled": false,
-        "path": "built-in"
+        "type": "external",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-github"],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+        },
+        "allowedTools": [
+          "create_or_update_file",
+          "search_repositories",
+          "create_issue",
+          "get_file_contents",
+          "push_files"
+        ]
       },
-      "bash": {
-        "enabled": false,
-        "path": "built-in"
+      "memory": {
+        "enabled": true,
+        "type": "external",
+        "command": "npx",
+        "args": ["-y", "@modelcontextprotocol/server-memory"],
+        "allowedTools": [
+          "create_entities",
+          "create_relations",
+          "add_observations",
+          "delete_entities",
+          "delete_observations",
+          "delete_relations",
+          "read_graph",
+          "search_nodes",
+          "open_nodes"
+        ]
       }
     }
   },

@@ -5,9 +5,12 @@ Universal development tools framework with AI skills and MCP orchestration.
 ## Features
 
 - 🐍 **Python Support**: Virtual environment setup with configurable registries
+- 🟢 **Node.js Support**: NPM/Yarn/PNPM with 5 project templates
 - 🤖 **AI Integration**: Automatic skills for Copilot, Cursor, Claude
 - ⚙️ **Flexible Configuration**: Works for individuals and enterprises
 - 📦 **Registry Support**: Public, Artifactory, or custom registries
+- 🧠 **MCP Integration**: Built-in Git + Memory servers, support for external servers
+- 🤝 **Multi-Agent Orchestration**: Coordinate specialized agents for complex tasks
 
 ## Quick Start
 
@@ -144,6 +147,8 @@ Comprehensive documentation is available in the `/docs` directory:
 - **[Architecture](docs/architecture/)** - System architecture and design
 - **[Usage Guides](docs/guides/)** - Getting started and reference guides
 - **[Implementation Details](docs/implementation/)** - MCP, Agents, and Plugins
+- **[MCP Integration Summary](docs/MCP_INTEGRATION_SUMMARY.md)** - Complete MCP server integration guide
+- **[MCP Quick Reference](docs/MCP_QUICK_REFERENCE.md)** - Quick reference for using MCP servers
 - **[Branding](docs/branding/)** - Visual identity and style guide
 - **[Presentations](docs/presentations/)** - Demo scripts and presentations
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history

@@ -47,13 +47,24 @@ class MCPServerManager {
     this.logger.debug(`Starting MCP server '${mcpName}'...`);
 
     try {
-      // Determine server path (built-in or custom)
-      const serverPath = serverConfig.path === 'built-in'
-        ? this.resolveBuiltInServer(mcpName)
-        : serverConfig.path;
+      // Determine server type and spawn accordingly
+      const serverType = serverConfig.type || 'built-in';
+      let serverProcess;
+      let serverPath;
 
-      // Spawn server process
-      const serverProcess = await this.spawnServer(serverPath, serverConfig.args || []);
+      if (serverType === 'built-in') {
+        // Built-in server: resolve path and spawn with node
+        serverPath = serverConfig.path === 'built-in'
+          ? this.resolveBuiltInServer(mcpName)
+          : serverConfig.path;
+        serverProcess = await this.spawnBuiltInServer(serverPath, serverConfig.args || []);
+      } else if (serverType === 'external') {
+        // External server: use custom command (e.g., npx, docker)
+        serverPath = `${serverConfig.command} ${serverConfig.args.join(' ')}`;
+        serverProcess = await this.spawnExternalServer(serverConfig);
+      } else {
+        throw new Error(`Unknown server type '${serverType}' for '${mcpName}'`);
+      }
 
       // Create connection (stdio-based JSON-RPC)
       const connection = await this.createConnection(serverProcess);
@@ -246,13 +257,13 @@ class MCPServerManager {
   }
 
   /**
-   * Spawn an MCP server process
+   * Spawn a built-in MCP server process
    * @param {string} serverPath - Path to server executable
    * @param {string[]} args - Server arguments
    * @returns {Promise<ChildProcess>} Server process
    * @private
    */
-  async spawnServer(serverPath, args = []) {
+  async spawnBuiltInServer(serverPath, args = []) {
     const { spawn } = require('child_process');
 
     // Spawn as Node.js process
@@ -265,6 +276,75 @@ class MCPServerManager {
     });
 
     return serverProcess;
+  }
+
+  /**
+   * Spawn an external MCP server process (e.g., via npx, docker)
+   * @param {object} serverConfig - Server configuration
+   * @returns {Promise<ChildProcess>} Server process
+   * @private
+   */
+  async spawnExternalServer(serverConfig) {
+    const { spawn } = require('child_process');
+
+    if (!serverConfig.command) {
+      throw new Error('External server requires "command" field in configuration');
+    }
+
+    if (!serverConfig.args || !Array.isArray(serverConfig.args)) {
+      throw new Error('External server requires "args" array in configuration');
+    }
+
+    // Interpolate environment variables in env config
+    const serverEnv = this.interpolateEnvVars(serverConfig.env || {});
+
+    // Merge with process env
+    const env = {
+      ...process.env,
+      ...serverEnv
+    };
+
+    // Spawn external command
+    this.logger.debug(`Spawning external server: ${serverConfig.command} ${serverConfig.args.join(' ')}`);
+
+    const serverProcess = spawn(serverConfig.command, serverConfig.args, {
+      stdio: ['pipe', 'pipe', 'pipe'],
+      env,
+      cwd: serverConfig.workingDir || process.cwd()
+    });
+
+    return serverProcess;
+  }
+
+  /**
+   * Interpolate environment variables from config (e.g., ${GITHUB_TOKEN} -> process.env.GITHUB_TOKEN)
+   * @param {object} envConfig - Environment variable config
+   * @returns {object} Interpolated environment variables
+   * @private
+   */
+  interpolateEnvVars(envConfig) {
+    const result = {};
+
+    for (const [key, value] of Object.entries(envConfig)) {
+      // Check for ${VAR} pattern
+      const match = /^\$\{([A-Z_][A-Z0-9_]*)\}$/.exec(value);
+
+      if (match) {
+        const envVarName = match[1];
+        const envValue = process.env[envVarName];
+
+        if (!envValue) {
+          this.logger.warn(`Environment variable ${envVarName} not set for MCP server`);
+        }
+
+        result[key] = envValue || '';
+      } else {
+        // Literal value
+        result[key] = value;
+      }
+    }
+
+    return result;
   }
 
   /**

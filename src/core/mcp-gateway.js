@@ -87,6 +87,17 @@ class MCPGateway {
       throw new Error('MCP Gateway not initialized. Call initialize() first.');
     }
 
+    // Check if tool is allowed for this server
+    const allowedTools = this.config.get(`mcp.servers.${mcpName}.allowedTools`);
+    if (allowedTools && Array.isArray(allowedTools) && allowedTools.length > 0) {
+      if (!allowedTools.includes(toolName)) {
+        throw new Error(
+          `Tool '${toolName}' is not allowed for MCP server '${mcpName}'. ` +
+          `Allowed tools: ${allowedTools.join(', ')}`
+        );
+      }
+    }
+
     // Generate cache key
     const cacheKey = this.cache.generateKey(mcpName, toolName, args);
 

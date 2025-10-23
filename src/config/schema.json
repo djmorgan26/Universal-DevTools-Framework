@@ -69,6 +69,63 @@
         "idleTimeout": {
           "type": "number",
           "minimum": 0
+        },
+        "servers": {
+          "type": "object",
+          "description": "MCP server configurations",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+$": {
+              "type": "object",
+              "required": ["enabled"],
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "description": "Whether this server is enabled"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["built-in", "external"],
+                  "default": "built-in",
+                  "description": "Server type: built-in (custom) or external (npm/community)"
+                },
+                "path": {
+                  "type": "string",
+                  "description": "For built-in servers: path to server file (use 'built-in' for auto-resolve)"
+                },
+                "command": {
+                  "type": "string",
+                  "description": "For external servers: command to run (e.g., 'npx', 'node', 'docker')"
+                },
+                "args": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "For external servers: command arguments"
+                },
+                "env": {
+                  "type": "object",
+                  "description": "Environment variables for the server process",
+                  "patternProperties": {
+                    "^[A-Z_][A-Z0-9_]*$": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "allowedTools": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Whitelist of allowed tools. If not specified, all tools are allowed."
+                },
+                "workingDir": {
+                  "type": "string",
+                  "description": "Working directory for the server process"
+                }
+              }
+            }
+          }
         }
       }
     },

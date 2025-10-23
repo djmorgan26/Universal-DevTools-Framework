@@ -172,12 +172,26 @@ npm test -- --coverage
 - Integration tests may need adjustments for CI/CD (process spawning)
 
 ## Documentation Resources
-- `README.md` - Getting started & quick reference
+- `README.md` - Getting started & quick reference (root only)
+- `CONTRIBUTING.md` - Contribution guidelines (root only)
+- `CHANGELOG.md` - Version history (root only)
 - `docs/PROJECT_STATUS.md` - Detailed status, metrics, roadmap
 - `docs/architecture/` - System architecture & design
 - `docs/guides/` - Usage guides & tutorials
 - `docs/implementation/` - MCP, agents, plugins details
-- `CONTRIBUTING.md` - Contribution guidelines
+- `docs/MCP_INTEGRATION_SUMMARY.md` - MCP server integration overview
+- `docs/MCP_QUICK_REFERENCE.md` - Quick reference for MCP servers
+
+## Documentation Policy
+**IMPORTANT**: All documentation files (*.md) MUST be placed in the `/docs` directory, with the following exceptions:
+- `README.md` - Project overview (root only)
+- `CONTRIBUTING.md` - Contribution guidelines (root only)
+- `CHANGELOG.md` - Version history (root only)
+
+When creating new documentation:
+1. Place all new `.md` files in `/docs` or appropriate subdirectory
+2. Do NOT create documentation in the project root
+3. Organize by type: guides/, implementation/, architecture/, etc.
 
 ## For Quick Debugging
 ```javascript
