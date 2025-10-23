@@ -133,11 +133,47 @@ function createParallelWorkflow(name, description, agentConfigs) {
   };
 }
 
+/**
+ * Build Workflow
+ * Generates code from natural language description
+ * Uses Planning Agent -> Code Generator Agent
+ */
+const buildWorkflow = {
+  name: 'build',
+  description: 'Generate code from natural language description',
+  steps: [
+    {
+      // Step 1: Create implementation plan
+      agent: {
+        name: 'planning',
+        inputMapping: {
+          description: '$input.description',
+          language: '$input.language',
+          context: '$input.context'
+        }
+      }
+    },
+    {
+      // Step 2: Generate code based on plan
+      agent: {
+        name: 'code-generator',
+        inputMapping: {
+          description: '$input.description',
+          language: '$input.language',
+          plan: '$planning.plan',
+          targetDir: '$input.targetDir'
+        }
+      }
+    }
+  ]
+};
+
 module.exports = {
   // Pre-defined workflows
   analyzeProjectWorkflow,
   quickScanWorkflow,
   deepAnalysisWorkflow,
+  buildWorkflow,
 
   // Workflow builders
   createCustomWorkflow,

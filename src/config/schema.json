@@ -129,6 +129,55 @@
         }
       }
     },
+    "llm": {
+      "type": "object",
+      "description": "LLM (Language Model) configuration for AI agents",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether LLM integration is enabled"
+        },
+        "provider": {
+          "type": "string",
+          "enum": ["anthropic", "openai"],
+          "description": "LLM provider to use"
+        },
+        "model": {
+          "type": "string",
+          "description": "Model name (e.g., 'claude-3-5-sonnet-20241022', 'gpt-4')"
+        },
+        "apiKeyEnv": {
+          "type": "string",
+          "description": "Environment variable name containing the API key"
+        },
+        "pricing": {
+          "type": "object",
+          "description": "Pricing information for cost estimation",
+          "properties": {
+            "inputTokensPer1M": {
+              "type": "number",
+              "description": "Cost per 1M input tokens in USD"
+            },
+            "outputTokensPer1M": {
+              "type": "number",
+              "description": "Cost per 1M output tokens in USD"
+            }
+          }
+        },
+        "maxTokens": {
+          "type": "number",
+          "description": "Default max tokens for completions",
+          "default": 4096
+        },
+        "temperature": {
+          "type": "number",
+          "description": "Default temperature for completions",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.7
+        }
+      }
+    },
     "branding": {
       "type": "object",
       "description": "Company branding and theming configuration",

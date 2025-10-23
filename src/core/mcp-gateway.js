@@ -213,6 +213,17 @@ class MCPGateway {
     await this.serverManager.startServer(mcpName);
     this.logger.verbose(`MCP server '${mcpName}' restarted`);
   }
+
+  /**
+   * List all available (initialized) MCP servers
+   * @returns {Array<string>} List of available server names
+   */
+  listAvailableServers() {
+    if (!this.connections) {
+      return [];
+    }
+    return Array.from(this.connections.keys());
+  }
 }
 
 module.exports = { MCPGateway };

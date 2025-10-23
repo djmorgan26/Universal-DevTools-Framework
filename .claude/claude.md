@@ -2,12 +2,46 @@
 
 This file provides essential context for Claude Code sessions working in this repository.
 
-## Project Identity
-**Universal DevTools Framework** - A production-ready CLI tool providing language-agnostic development tools with intelligent plugin management, MCP integration, and multi-agent orchestration.
+## 📌 Project Context (Auto-Injected)
 
-**Status**: Production Ready v1.0.0
+**IMPORTANT**: Before making significant changes, check the project's stored context:
+
+```bash
+# View all project preferences, decisions, and standards
+node bin/devtools.js context show
+
+# Query specific context
+node bin/devtools.js context query "testing"
+node bin/devtools.js context query "database"
+```
+
+The context system stores:
+- **Preferences**: Coding style, tool choices, patterns to follow
+- **Decisions**: Architecture choices, why certain approaches were taken
+- **Standards**: Code quality rules, testing requirements, documentation needs
+- **Patterns**: Recurring patterns used in this codebase
+- **Architecture**: System design, component relationships
+
+**When you make code changes, update context if you:**
+- Make an architectural decision
+- Choose a specific pattern or library
+- Establish a new coding standard
+- Learn something that should be remembered
+
+```bash
+# Add new context
+node bin/devtools.js context add "Always use async/await" --type standard
+
+# Refine existing context
+node bin/devtools.js context refine "item name" --add "additional detail"
+```
+
+## Project Identity
+**Universal DevTools Framework** - A production-ready CLI tool providing language-agnostic development tools with intelligent plugin management, MCP integration, multi-agent orchestration, and persistent context management.
+
+**Status**: Production Ready v1.0.0+
 **Test Coverage**: 95%+
-**Core Tech**: Node.js 18+, Jest, ESLint
+**Core Tech**: Node.js 18+, Jest, ESLint, MCP Protocol
 
 ## Quick Start Commands
 

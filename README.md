@@ -1,15 +1,16 @@
 # DevTools Framework
 
-Universal development tools framework with AI skills and MCP orchestration.
+Universal development tools framework with AI skills, MCP orchestration, and persistent context management.
 
 ## Features
 
 - 🐍 **Python Support**: Virtual environment setup with configurable registries
 - 🟢 **Node.js Support**: NPM/Yarn/PNPM with 5 project templates
 - 🤖 **AI Integration**: Automatic skills for Copilot, Cursor, Claude
+- 🧠 **Context Management**: Persistent memory for project preferences, decisions, and standards (NEW!)
 - ⚙️ **Flexible Configuration**: Works for individuals and enterprises
 - 📦 **Registry Support**: Public, Artifactory, or custom registries
-- 🧠 **MCP Integration**: Built-in Git + Memory servers, support for external servers
+- 🔌 **MCP Integration**: Built-in Git + Memory servers, support for external servers
 - 🤝 **Multi-Agent Orchestration**: Coordinate specialized agents for complex tasks
 
 ## Quick Start
@@ -47,6 +48,34 @@ node bin/devtools.js --help
 ```
 
 ## Commands
+
+### Context Management (Make AI Assistants Smarter!)
+```bash
+# Initialize context for your project
+devtools context init
+
+# Add preferences, decisions, standards
+devtools context add "Always use async/await" --type preference
+devtools context add "Database: PostgreSQL with Prisma" --type decision
+devtools context add "Test coverage >90%" --type standard
+
+# View and query
+devtools context list
+devtools context query "database"
+
+# Show for AI (copy into Claude Code, Copilot, Cursor)
+devtools context show
+
+# Export/Import
+devtools context export --output context.json
+devtools context import context.json
+
+# Refine and manage
+devtools context refine "item name" --add "new observation"
+devtools context remove "old item"
+```
+
+See [Context Management Guide](docs/CONTEXT_MANAGEMENT.md) for full documentation.
 
 ### Python Plugin
 ```bash

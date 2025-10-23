@@ -74,6 +74,19 @@
     }
   },
 
+  "llm": {
+    "enabled": false,
+    "provider": "anthropic",
+    "model": "claude-3-5-sonnet-20241022",
+    "apiKeyEnv": "ANTHROPIC_API_KEY",
+    "pricing": {
+      "inputTokensPer1M": 3.00,
+      "outputTokensPer1M": 15.00
+    },
+    "maxTokens": 4096,
+    "temperature": 0.7
+  },
+
   "branding": {
     "theme": "default",
     "customStylesPath": null,
